@@ -1,8 +1,5 @@
 /*
  * heapsort.c
- *
- *  Created on: Jul 1, 2013
- *      Author: 
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,16 +15,12 @@
  */
 void heapSort(struct Employee *A, int n)
 {
-	//TODO - BuildHeap on the list
-	
-	//TODO - while n > 0:
-		//TODO - swap A[n-1] with A[0], since A[0] is the smallest number.
-		//TODO - A[n-1] now sorted in place!
-		//TODO - So decrement n
-		//TODO - Heapify the elements from A[0] up to A[n-1] (which leaves the newly sorted element alone)
+	buildHeap(A, n); 	
+    for(int i = n - 1; i >= 0; i--){ 
+        swap(&A[0], &A[i]);
+        heapify(A, 0, i);
+    }
 }
-
-
 /**
  * Given an array A[], we want to get A[] into min-heap property
  * We only need to run heapify() on internal nodes (there are floor(n/2) of them)
@@ -38,7 +31,9 @@ void heapSort(struct Employee *A, int n)
  */
 void buildHeap(struct Employee *A, int n)
 {
-	//TODO - heapify() every element from A[n/2] to A[0]
+	for(int i = n / 2 - 1; i >= 0; i--){  /*heapify from A[n/2] to A[0]*/
+		heapify(A,i,n);
+	}
 }
 
 
@@ -52,15 +47,21 @@ void buildHeap(struct Employee *A, int n)
  */
 void heapify(struct Employee *A, int i, int n)
 {
-	//TODO - get index of left child of element i
-	//TODO - get index of right child of element i
 
-	//TODO - determine which child has a smaller salary. We'll call the index of this
-	//		element: "smaller"
+	int smaller = i; 
+	int left_child = (2*i+1);
+	int right_child = (2*i+2);
 
-	//TODO - recursively check if the salary at A[i] > the salary at A[smaller]. If it is, swap the two.
-	//			Then recursively heapify A[smaller].
-	//TODO - Continue recursion as long as i is within range AND either right_child and left_child are still within range.
+	if(left_child < n && A[left_child].salary < A[smaller].salary){
+		smaller = left_child;
+	}
+	if(right_child < n && A[right_child].salary < A[smaller].salary){
+		smaller = right_child;
+	}
+	if(A[smaller].salary != A[i].salary){ 
+		swap(&A[i], &A[smaller]);
+		heapify(A, n, smaller);
+	}
 }
 
 /**
@@ -70,8 +71,9 @@ void heapify(struct Employee *A, int i, int n)
  * @param	n	Size of the list
  */
 struct Employee *getMinPaidEmployee(struct Employee *A, int n)
-{
-	//TODO
+{ 
+	struct Employee *e_ptr = &A[n];
+	return e_ptr; 					/*the employee with the smallest salary will be at end of list*/
 }
 
 
@@ -82,7 +84,9 @@ struct Employee *getMinPaidEmployee(struct Employee *A, int n)
  */
 void swap(struct Employee *e1, struct Employee *e2)
 {
-	//TODO 
+	struct Employee tmp = *e1;
+	*e1 = *e2;
+	*e2 = tmp;
 }
 
 /**
@@ -92,5 +96,11 @@ void swap(struct Employee *e1, struct Employee *e2)
  */
 void printList(struct Employee *A, int n)
 {
-	//TODO
+	for(int i = 0; i < n; i++){
+		if(i == n-1){ 			/*if its the last element in the list dont print trailing comma*/
+		printf("[id=%s sal=%d]\n", A[i].name, A[i].salary);
+		} else {
+		printf("[id=%s sal=%d], ", A[i].name, A[i].salary);	
+		}
+	}
 }
